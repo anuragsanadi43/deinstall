@@ -28,6 +28,7 @@ func main() {
 
 	if err != nil {
 		fmt.Println("No Defile exists. Please create one....")
+		os.Exit(404)
 	}
 
 	// place contents of the file into dependenciesInstaller object
@@ -35,8 +36,6 @@ func main() {
 	if error != nil {
 		log.Fatalf("error: %v", err)
 	}
-
-	fmt.Printf("Deinstaller installing dependencies for %s\n", dependenciesInstaller.App)
 
 	packageManager := ""
 	helpPage := "usage: deinstall [options]\n    options:\n      --help display this help message\n      --dist=deb|arch|redhat|fedora|freebsd install debpendencies depending on your linux distribution"
@@ -47,10 +46,12 @@ func main() {
 		// len(os.Args) == 2
 		if string(os.Args[1]) == "--help" {
 			fmt.Println(helpPage)
+			os.Exit(404)
 		} else {
 			if len(string(os.Args[1])[:7]) == 7 && string(os.Args[1])[:7] == "--dist=" {
 				if (os.Args[1])[7:] == "deb" {
 					packageManager = dependenciesInstaller.Dependencies.Deb
+					fmt.Printf("Deinstaller installing dependencies for %s\n", dependenciesInstaller.App)
 				}
 			} else {
 				fmt.Println(helpPage)
@@ -62,7 +63,7 @@ func main() {
 		if packageManager != "" {
 			command := fmt.Sprintf("sudo apt-get install %s -y", packageManager)
 			c := exec.Command("/bin/bash", "-c", command)
-			fmt.Println(c)
+			//fmt.Println(c)
 			if err := c.Run(); err != nil {
 				fmt.Println("Error in installation: ", err)
 			}
