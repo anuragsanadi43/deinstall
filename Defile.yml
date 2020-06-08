@@ -1,0 +1,7 @@
+app: "bash"
+Description: "Some description"
+Dependencies:
+  deb: "python2 python2-minimal terminator"
+  yum: "python2 python2-minimal terminator"
+  dnf: "python2 python2-minimal terminator"
+  pkg: "python2 python2-minimal terminator"
