@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"os/exec"
 	"runtime"
 
@@ -37,13 +38,38 @@ func main() {
 
 	fmt.Printf("Deinstaller installing dependencies for %s\n", dependenciesInstaller.App)
 
-	//fmt.Println(runtime.GOOS)
-	if runtime.GOOS == "linux" {
-		var command string = fmt.Sprintf("sudo apt install %s\n", dependenciesInstaller.Dependencies.Deb)
-		cmd := exec.Command(command)
-		fmt.Println(cmd)
+	packageManager := ""
+	helpPage := "usage: deinstall [options]\n    options:\n      --help display this help message\n      --dist=deb|arch|redhat|fedora|freebsd install debpendencies depending on your linux distribution"
+
+	if len(os.Args) != 2 {
+		fmt.Println(helpPage)
 	} else {
-		fmt.Println("This command only works on Debian based systems")
+		// len(os.Args) == 2
+		if string(os.Args[1]) == "--help" {
+			fmt.Println(helpPage)
+		} else {
+			if len(string(os.Args[1])[:7]) == 7 && string(os.Args[1])[:7] == "--dist=" {
+				if (os.Args[1])[7:] == "deb" {
+					packageManager = dependenciesInstaller.Dependencies.Deb
+				}
+			} else {
+				fmt.Println(helpPage)
+			}
+		}
+	}
+
+	if runtime.GOOS == "linux" {
+		if packageManager != "" {
+			command := fmt.Sprintf("sudo apt-get install %s -y", packageManager)
+			c := exec.Command("/bin/bash", "-c", command)
+			fmt.Println(c)
+			if err := c.Run(); err != nil {
+				fmt.Println("Error in installation: ", err)
+			}
+		} else {
+			fmt.Println("This command only works on Debian based systems")
+		}
+
 	}
 
 }
