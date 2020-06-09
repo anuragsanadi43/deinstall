@@ -37,7 +37,7 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
-	packageManager := ""
+	packages := ""
 	helpPage := "usage: deinstall [options]\n    options:\n      --help display this help message\n      --dist=deb|arch|redhat|fedora|freebsd install debpendencies depending on your linux distribution"
 
 	if len(os.Args) != 2 {
@@ -51,7 +51,7 @@ func main() {
 		} else {
 			if len(string(os.Args[1])) > 6 && string(os.Args[1])[:7] == "--dist=" {
 				if (os.Args[1])[7:] == "deb" {
-					packageManager = dependenciesInstaller.Dependencies.Deb
+					packages = dependenciesInstaller.Dependencies.Deb
 					fmt.Printf("Deinstaller installing dependencies for %s\n", dependenciesInstaller.App)
 				} else {
 					fmt.Printf("'%s' package manager not available\n", (os.Args[1])[7:])
@@ -64,8 +64,8 @@ func main() {
 	}
 
 	if runtime.GOOS == "linux" {
-		if packageManager != "" {
-			command := fmt.Sprintf("sudo apt-get install %s -y", packageManager)
+		if packages != "" {
+			command := fmt.Sprintf("sudo apt-get install %s -y", packages)
 			c := exec.Command("/bin/bash", "-c", command)
 			//fmt.Println(c)
 
