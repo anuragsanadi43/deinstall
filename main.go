@@ -53,6 +53,9 @@ func main() {
 				if (os.Args[1])[7:] == "deb" {
 					packageManager = dependenciesInstaller.Dependencies.Deb
 					fmt.Printf("Deinstaller installing dependencies for %s\n", dependenciesInstaller.App)
+				} else {
+					fmt.Printf("'%s' package manager not available\n", (os.Args[1])[7:])
+					fmt.Println("Run 'deinstall --help' for help page")
 				}
 			} else {
 				fmt.Println(helpPage)
