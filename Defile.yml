@@ -1,4 +1,4 @@
 app: "bash"
 description: "Some description"
 dependencies:
-  deb: ""
+  deb: "python3"

@@ -41,14 +41,15 @@ func main() {
 	helpPage := "usage: deinstall [options]\n    options:\n      --help display this help message\n      --dist=deb|arch|redhat|fedora|freebsd install debpendencies depending on your linux distribution"
 
 	if len(os.Args) != 2 {
+		// proper arguments not given by user
 		fmt.Println(helpPage)
 	} else {
-		// len(os.Args) == 2
+		// len(os.Args) == 2 -- correct command
 		if string(os.Args[1]) == "--help" {
 			fmt.Println(helpPage)
 			os.Exit(404)
 		} else {
-			if len(string(os.Args[1])[:7]) == 7 && string(os.Args[1])[:7] == "--dist=" {
+			if len(string(os.Args[1])) > 6 && string(os.Args[1])[:7] == "--dist=" {
 				if (os.Args[1])[7:] == "deb" {
 					packageManager = dependenciesInstaller.Dependencies.Deb
 					fmt.Printf("Deinstaller installing dependencies for %s\n", dependenciesInstaller.App)
@@ -64,13 +65,14 @@ func main() {
 			command := fmt.Sprintf("sudo apt-get install %s -y", packageManager)
 			c := exec.Command("/bin/bash", "-c", command)
 			//fmt.Println(c)
-			if err := c.Run(); err != nil {
+
+			err := c.Run()
+			if err != nil {
 				fmt.Println("Error in installation: ", err)
 			}
-		} else {
-			fmt.Println("This command only works on Debian based systems")
 		}
-
+	} else {
+		fmt.Println("This command only works on Debian based systems")
 	}
 
 }
